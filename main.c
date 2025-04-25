@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+
 int main(void) {
     printf("C1  C2  C3  C4  C5  C6  C7        \n\n");
     printf("[]  []  []  []  []  []  []    []  F1\n\n");
@@ -9,4 +10,8 @@ int main(void) {
     printf("LAST Command: <none>              \n");
     printf("Message: <none>                   \n");
     return 0;
+}
+
+void print_board() {
+
 }
