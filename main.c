@@ -1,15 +1,20 @@
 #include <stdio.h>
 
+#include "deck.h"
+#include "stack.h"
 
 int main(void) {
-    printf("C1  C2  C3  C4  C5  C6  C7        \n\n");
-    printf("[]  []  []  []  []  []  []    []  F1\n\n");
-    printf("[]  []  []  []  []  []  []    []  F2\n\n");
-    printf("[]  []  []  []  []  []  []    []  F3\n\n");
-    printf("[]  []  []  []  []  []  []    []  F4\n\n");
-    printf("LAST Command: <none>              \n");
-    printf("Message: <none>                   \n");
-    return 0;
+    Card* deck[DECK_SIZE];
+    Stack tableau[NUM_TABLEAU];
+
+    create_deck(deck);
+    shuffle_deck(deck);
+    deal_to_tableau(deck, tableau);
+
+    for (int i = 0; i < NUM_TABLEAU; i++) {
+        printf("Pile %d: ", i + 1);
+        stack_print(&tableau[i]);
+    }
 }
 
 void print_board() {
