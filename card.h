@@ -1,6 +1,5 @@
-//
-// Created by JimmiHansen on 10-04-2025.
-//
+#ifndef CARD_H
+#define CARD_H
 
 typedef enum {
     HEARTS, DIAMONDS, CLUBS, SPADES
@@ -23,3 +22,5 @@ char suit_to_char(Suit suit);
 const char* rank_to_str(Rank rank);
 Card* create_card(Suit suit, Rank rank);
 void free_card_list(Card* card);
+
+#endif // CARD_H

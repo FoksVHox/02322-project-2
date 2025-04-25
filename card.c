@@ -1,13 +1,6 @@
-//
-// Created by Jimmi Hansen on 24-04-2025.
-//
-
-#ifndef DECK_H
 #include <stdio.h>
 #include <stdlib.h>
 #include "card.h"
-
-#define DECK_H
 
 char suit_to_char(Suit suit) {
     switch (suit) {
@@ -24,6 +17,7 @@ const char* rank_to_str(Rank rank) {
         "?", "A", "2", "3", "4", "5", "6",
         "7", "8", "9", "10", "J", "Q", "K"
     };
+    if (rank < ACE || rank > KING) return names[0];
     return names[rank];
 }
 
@@ -48,5 +42,3 @@ void free_card_list(Card* card) {
         card = next;
     }
 }
-
-#endif

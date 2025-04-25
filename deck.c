@@ -1,61 +1,39 @@
-#include "cards.h"
-//
-// Created by JimmiHansen on 10-04-2025.
-//
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "cards.h"
-#define DECK_SIZE 52
+#include <time.h>
+#include "deck.h"
+#include "card.h"
+#include "stack.h"
 
-typedef struct {
-    Card cards[DECK_SIZE];
-    int top;
-} Deck;
-
-
-
-//load deck from file function
-int load_deck(const char *file_name, Card** deck) {
-    FILE * file = fopen(file_name, "r");
-
-    //if no file is selected
-    if (file == NULL) {
-        printf("File not found\n");
-        return -1; //return -1 so it's easier to spot errors
-    }
-
-    char line[10];
-    int card_count = 0;
-
-    while (fgets(line, sizeof(line), file)) {
-        line[strcspn(line, "\r\n")] = 0;
-
-        if (strlen(line) == 0) {
-            continue;
+void create_deck(Card* deck[DECK_SIZE]) {
+    int idx = 0;
+    for (Suit s = HEARTS; s <= SPADES; ++s) {
+        for (Rank r = ACE; r <= KING; ++r) {
+            deck[idx++] = create_card(s, r);
         }
+    }
+}
 
-        if (strlen(line) != 2) {
-            printf("Line is '%s'This string is too long or short\n", line);
-            fclose(file);
-            return -1;
+void shuffle_deck(Card* deck[DECK_SIZE]) {
+    srand((unsigned)time(NULL));
+    for (int i = DECK_SIZE - 1; i > 0; --i) {
+        int j = rand() % (i + 1);
+        Card* tmp = deck[i];
+        deck[i] = deck[j];
+        deck[j] = tmp;
+    }
+}
+
+void deal_to_tableau(Card* deck[DECK_SIZE], Stack tableau[NUM_TABLEAU]) {
+    int lengths[NUM_TABLEAU] = {1, 6, 7, 8, 9, 10, 11};
+    int idx = 0;
+
+    for (int i = 0; i < NUM_TABLEAU; ++i) {
+        stack_init(&tableau[i]);
+        int face_down_count = lengths[i] > 5 ? lengths[i] - 5 : 0;
+        for (int j = 0; j < lengths[i]; ++j) {
+            Card* c = deck[idx++];
+            c->face_up = (j < face_down_count) ? 0 : 1;
+            stack_push(&tableau[i], c);
         }
-
-        // sorts the card order (AH, 2D, 3C, 4C, QH etc.)
-        char rank = line[0];
-        char suit = line[1];
-
-        //Card* new_card = create_card(rank, suit, 0);
-        //append_card(deck, new_card);
-        card_count++;
     }
-    fclose(file);
-
-    //checks if deck is 52 cards (probably not necessary, but good to have just in case)
-    if (card_count != 52) {
-        printf("Wrong number of cards\n");
-        return -1;
-    }
-    return 0;
-
 }
