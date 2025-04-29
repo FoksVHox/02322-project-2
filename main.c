@@ -3,9 +3,13 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "game.h"
+
+
+#include "game.c"
 
 int main(void) {
+
+
     Game game;
     init_game(&game);
 
