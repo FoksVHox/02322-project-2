@@ -77,75 +77,75 @@ void draw_game(const Game* g) {
 
 
 int perform_move(Game* g, int from_col, int from_pos, int to_col) {
-    printf("Attempting move: from tableau %d depth %d to %d\n", from_col, from_pos, to_col);
+    printf("Attempting move: from tableau %d depth %d to %d", from_col, from_pos, to_col);
 
     // Validate source column
     if (from_col < 1 || from_col > NUM_TABLEAU) {
-        printf("  ! FAILED: source column %d out of range\n", from_col);
+        printf("  → FAILED: source column %d out of range", from_col);
         return 0;
     }
     Stack* src = &g->tableau[from_col - 1];
     Card* bottom = stack_peek_at(src, from_pos);
     if (!bottom) {
-        printf("  ! FAILED: no card at that depth (depth %d)\n", from_pos);
+        printf("  → FAILED: no card at that depth (depth %d)", from_pos);
         return 0;
     }
     if (!bottom->face_up) {
-        printf("  ! FAILED: card at depth %d is face-down\n", from_pos);
+        printf("  → FAILED: card at depth %d is face-down", from_pos);
         return 0;
     }
 
     // Move to foundation?
     if (to_col >= 101 && to_col < 101 + NUM_FOUNDATIONS) {
         int f = to_col - 101;
-        printf("  $ Target: Foundation %d\n", f+1);
+        printf("  → Target: Foundation %d", f+1);
         if (from_pos != 0) {
-            printf("  ! FAILED: only single-card moves to foundations allowed\n");
+            printf("  → FAILED: only single-card moves to foundations allowed");
             return 0;
         }
         Card* topF = stack_peek(&g->foundations[f]);
         Rank expected = topF ? (Rank)(topF->rank + 1) : ACE;
         if (bottom->rank != expected) {
-            printf("  ! FAILED: expected rank %d, got %d\n", expected, bottom->rank);
+            printf("  → FAILED: expected rank %d, got %d", expected, bottom->rank);
             return 0;
         }
         if (topF && bottom->suit != topF->suit) {
-            printf("  ! FAILED: suit mismatch: foundation has %c, card is %c\n",
+            printf("  → FAILED: suit mismatch: foundation has %c, card is %c",
                    suit_to_char(topF->suit), suit_to_char(bottom->suit));
             return 0;
         }
         // perform move
         Card* moved = stack_pop(src);
         stack_push(&g->foundations[f], moved);
-        printf("  £ SUCCESS: moved to foundation %d\n", f+1);
+        printf("  → SUCCESS: moved to foundation %d", f+1);
         return 1;
     }
 
     // Move to tableau
     if (to_col < 1 || to_col > NUM_TABLEAU) {
-        printf("  ! FAILED: destination column %d out of range\n", to_col);
+        printf("  → FAILED: destination column %d out of range", to_col);
         return 0;
     }
-    printf("  $ Target: Tableau %d\n", to_col);
+    printf("  → Target: Tableau %d", to_col);
     Stack* dst = &g->tableau[to_col - 1];
     Card* dst_top = stack_peek(dst);
 
     // Empty column rules
     if (!dst_top) {
         if (bottom->rank != KING) {
-            printf("  ! FAILED: only a KING can be moved to an empty column\n");
+            printf("  → FAILED: only a KING can be moved to an empty column");
             return 0;
         }
     } else {
-        // color rule
-        if (is_red(bottom->suit) == is_red(dst_top->suit)) {
-            printf("  ! FAILED: colors must alternate (%c over %c)\n",
+        // new rule: only disallow same-suit on tableau
+        if (bottom->suit == dst_top->suit) {
+            printf("  → FAILED: cannot place same suit (%c on %c)",
                    suit_to_char(bottom->suit), suit_to_char(dst_top->suit));
             return 0;
         }
-        // rank rule
+        // rank rule: must be one lower than destination
         if (bottom->rank + 1 != dst_top->rank) {
-            printf("  ! FAILED: rank must be one lower (%d over %d)\n",
+            printf("  → FAILED: rank must be one lower (%d on %d)",
                    bottom->rank, dst_top->rank);
             return 0;
         }
@@ -158,10 +158,10 @@ int perform_move(Game* g, int from_col, int from_pos, int to_col) {
     Card* new_top = stack_peek(src);
     if (new_top && !new_top->face_up) {
         new_top->face_up = 1;
-        printf("  $ Flipped card %s%c face-up\n",
+        printf("  → Flipped card %s%c face-up",
                rank_to_str(new_top->rank), suit_to_char(new_top->suit));
     }
-    printf("  → SUCCESS: moved sequence to tableau %d\n", to_col);
+    printf("  → SUCCESS: moved sequence to tableau %d", to_col);
     return 1;
 }
 
