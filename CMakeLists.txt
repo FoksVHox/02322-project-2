@@ -17,7 +17,7 @@ add_executable(02322_project_2
         stack.c
         card.c
         game.c
-        gui.cpp
+        view.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARY})
