@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include "game.h"
+
+#include <stdlib.h>
+
 #include "card.h"
 #include "stack.h"
 
@@ -73,6 +76,40 @@ void draw_game(const Game* g) {
         printf("\n");
     }
     printf("\n");
+}
+
+int load_deck(Game* game, const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        perror("Failed to open deck file");
+        return 0; // Failure
+    }
+
+    for (int i = 0; i < DECK_SIZE; ++i) {
+        char rank[3], suit;
+        if (fscanf(file, "%2s%c", rank, &suit) != 2) {
+            fclose(file);
+            return 0; // Failure
+        }
+
+        // Allocate and initialize a new Card
+        Card* card = malloc(sizeof(Card));
+        if (!card) {
+            fclose(file);
+            return 0; // Failure
+        }
+
+        // Set the card's rank and suit
+        card->rank = rank_to_enum(rank);
+        card->suit = suit_to_enum(suit);
+        card->face_up = 0; // Cards are face down initially
+
+        // Add the card to the deck
+        game->deck[i] = card;
+    }
+
+    fclose(file);
+    return 1; // Success
 }
 
 
@@ -164,4 +201,3 @@ int perform_move(Game* g, int from_col, int from_pos, int to_col) {
     printf("  → SUCCESS: moved sequence to tableau %d", to_col);
     return 1;
 }
-

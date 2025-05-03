@@ -22,5 +22,7 @@ char suit_to_char(Suit suit);
 const char* rank_to_str(Rank rank);
 Card* create_card(Suit suit, Rank rank);
 void free_card_list(Card* card);
+int rank_to_enum(const char* rank);
+int suit_to_enum(char suit);
 
 #endif // CARD_H

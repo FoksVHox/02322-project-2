@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include "card.h"
 
+#include <ctype.h>
+#include <string.h>
+
 char suit_to_char(Suit suit) {
     switch (suit) {
         case HEARTS:   return 'H';
@@ -9,6 +12,33 @@ char suit_to_char(Suit suit) {
         case CLUBS:    return 'C';
         case SPADES:   return 'S';
         default:       return '?';
+    }
+}
+
+int rank_to_enum(const char* rank) {
+    if (strcmp(rank, "A") == 0) return 0;
+    if (strcmp(rank, "2") == 0) return 1;
+    if (strcmp(rank, "3") == 0) return 2;
+    if (strcmp(rank, "4") == 0) return 3;
+    if (strcmp(rank, "5") == 0) return 4;
+    if (strcmp(rank, "6") == 0) return 5;
+    if (strcmp(rank, "7") == 0) return 6;
+    if (strcmp(rank, "8") == 0) return 7;
+    if (strcmp(rank, "9") == 0) return 8;
+    if (strcmp(rank, "10") == 0) return 9;
+    if (strcmp(rank, "J") == 0) return 10;
+    if (strcmp(rank, "Q") == 0) return 11;
+    if (strcmp(rank, "K") == 0) return 12;
+    return -1;  // Invalid rank
+}
+
+int suit_to_enum(char suit) {
+    switch (toupper(suit)) {
+        case 'S': return 0;
+        case 'H': return 1;
+        case 'D': return 2;
+        case 'C': return 3;
+        default: return -1;  // Invalid suit
     }
 }
 

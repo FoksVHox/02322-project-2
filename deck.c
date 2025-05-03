@@ -23,6 +23,8 @@ void shuffle_deck(Card* deck[DECK_SIZE]) {
     }
 }
 
+
+
 void deal_to_tableau(Card* deck[DECK_SIZE], Stack tableau[NUM_TABLEAU]) {
     int lengths[NUM_TABLEAU] = {1, 6, 7, 8, 9, 10, 11};
     int idx = 0;

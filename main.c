@@ -32,6 +32,20 @@ int main(void) {
         if (toupper(tok1[0]) == 'Q')
             break;
 
+        if (toupper(tok1[0]) == 'L' && toupper(tok1[1]) == 'D') {
+            if (!tok2) {
+                printf("Missing filename. Usage: LD filename.txt\n\n");
+                continue;
+            }
+            int loaded = load_deck(&game, tok2);  // <-- this is your custom helper
+            if (!loaded) {
+                printf("Failed to load deck from '%s'.\n\n", tok2);
+            } else {
+                printf("Deck loaded from '%s'.\n\n", tok2);
+            }
+            continue;
+        }
+
         if (!tok2 || !tok3) {
             printf("Bad input format.   →  Use e.g.  T2 0 T4\n\n");
             continue;

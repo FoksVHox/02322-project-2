@@ -16,5 +16,9 @@ typedef struct {
 void init_game(Game* game);
 void draw_game(const Game* game);
 int perform_move(Game* game, int from_col, int from_pos, int to_col);
+int load_deck_from_file(Game* game, const char* filename);
+int load_deck(Game* game, const char* filename);
+void init_game(Game* game);
+void draw_game(const Game* game);
 
 #endif // GAME_H
