@@ -25,7 +25,7 @@ int rank_to_enum(const char* rank) {
     if (strcmp(rank, "7") == 0) return 6;
     if (strcmp(rank, "8") == 0) return 7;
     if (strcmp(rank, "9") == 0) return 8;
-    if (strcmp(rank, "10") == 0) return 9;
+    if (strcmp(rank, "10") == 0|| strcmp(rank, "T") == 0) return 9;
     if (strcmp(rank, "J") == 0) return 10;
     if (strcmp(rank, "Q") == 0) return 11;
     if (strcmp(rank, "K") == 0) return 12;
