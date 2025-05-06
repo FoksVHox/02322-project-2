@@ -57,14 +57,14 @@ void draw_game(const Game* g) {
                 int depth = h - 1 - row;
                 Card* c = stack_peek_at(&g->tableau[col], depth);
                 if (c->face_up) {
-                    printf("%-4s",
-                       (snprintf((char[4]){},0,"%s%c",
-                                 rank_to_str(c->rank),
-                                 suit_to_char(c->suit)),
-                        (char[4]){rank_to_str(c->rank)[0], suit_to_char(c->suit),0}));
+                    char buf[4];
+                    snprintf(buf, sizeof(buf), "%s%c", rank_to_str(c->rank), suit_to_char(c->suit));
+                    printf("%3s ", buf);
                 } else {
-                    printf("%-4s", "XX");
+                    printf("%3s ", "XX");
                 }
+
+
             } else {
                 // no card this deep
                 printf("    ");
@@ -144,11 +144,12 @@ int perform_move(Game* g, int from_col, int from_pos, int to_col) {
             return 0;
         }
         // rank rule: must be one lower than destination
-        if (bottom->rank + 1 != dst_top->rank) {
-            printf("  → FAILED: rank must be one lower (%d on %d)",
+        if (bottom->rank != dst_top->rank - 1) {
+            printf("  → FAILED: destination card must be one rank higher (%d on %d)",
                    bottom->rank, dst_top->rank);
             return 0;
         }
+
     }
 
     // Detach and move sequence
