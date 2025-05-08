@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include "game.h"
+
+#include <stdlib.h>
+#include <string.h>
+
 #include "card.h"
 #include "stack.h"
 
@@ -15,6 +19,64 @@ void init_game(Game* g) {
     for (int i = 0; i < NUM_FOUNDATIONS; ++i) {
         stack_init(&g->foundations[i]);
     }
+}
+
+int load_deck(Game* game, const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        perror("Failed to open deck file");
+        return 0; // Failure
+    }
+
+    for (int i = 0; i < DECK_SIZE; ++i) {
+        char buffer[4]; // Enough for "10H", '\0'
+        if (fscanf(file, "%3s", buffer) != 1) {
+            printf("DEBUG: Failed to read card string on line %d\n", i + 1);
+            fclose(file);
+            return 0;
+        }
+
+        // DEBUG
+        printf("DEBUG: Read string '%s'\n", buffer);
+
+        // Determine length (to split rank/suit)
+        size_t len = strlen(buffer);
+        if (len < 2 || len > 3) {
+            printf("DEBUG: Invalid card format '%s'\n", buffer);
+            fclose(file);
+            return 0;
+        }
+
+        char suit = buffer[len - 1]; // last char is suit
+        char rankStr[3];
+        strncpy(rankStr, buffer, len - 1);
+        rankStr[len - 1] = '\0';
+
+        // DEBUG
+        printf("DEBUG: Parsed rank '%s', suit '%c'\n", rankStr, suit);
+
+        Card* card = malloc(sizeof(Card));
+        if (!card) {
+            fclose(file);
+            return 0;
+        }
+
+        card->rank = rank_to_enum(rankStr);
+        card->suit = suit_to_enum(suit);
+        card->face_up = 0;
+
+        if (card->rank == -1 || card->suit == -1) {
+            printf("DEBUG: Invalid card value '%s%c'\n", rankStr, suit);
+            free(card);
+            fclose(file);
+            return 0;
+        }
+
+        game->deck[i] = card;
+    }
+
+    fclose(file);
+    return 1;
 }
 
 void draw_game(const Game* g) {
