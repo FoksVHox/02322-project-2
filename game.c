@@ -50,28 +50,26 @@ void draw_game(const Game* g) {
     for (int row = 0; row < maxh; ++row) {
         for (int col = 0; col < NUM_TABLEAU; ++col) {
             int h = heights[col];
-            if (row < h) {
-                // Map printed-row → stack-depth:
-                // row=0  → bottom-of-stack (depth = h-1)
-                // row=h-1 → top-of-stack (depth = 0)
-                int depth = h - 1 - row;
+            int depth = h - 1 - row;
+            // Map printed-row → stack-depth:
+            // row=0  → bottom-of-stack (depth = h-1)
+            // row=h-1 → top-of-stack (depth = 0)
+            if (depth >= 0) {
                 Card* c = stack_peek_at(&g->tableau[col], depth);
-                if (c->face_up) {
-                    char buf[4];
-                    snprintf(buf, sizeof(buf), "%s%c", rank_to_str(c->rank), suit_to_char(c->suit));
-                    printf("%3s ", buf);
-                } else {
-                    printf("%3s ", "XX");
+                char label[4] = "XX";
+                if (c && c->face_up) {
+                    snprintf(label, sizeof(label), "%s%c",
+                             rank_to_str(c->rank),
+                             suit_to_char(c->suit));
                 }
-
-
+                printf("%-5s", label);  // 5-character field for spacing
             } else {
-                // no card this deep
-                printf("    ");
+                printf("     ");  // blank space for missing cards
             }
         }
         printf("\n");
     }
+
     printf("\n");
 }
 
